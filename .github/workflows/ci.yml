@@ -1,0 +1,46 @@
+name: RaceDay CI
+
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+    branches: [ "**" ]
+
+jobs:
+  validate-structure:
+    name: Validate repository structure
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check the docs folder holds the Part 1 documents
+        run: |
+          set -e
+          test -d docs || { echo "::error::docs folder is missing"; exit 1; }
+          shopt -s nullglob
+          erd=(docs/*ERD*.png docs/*ERD*.pdf)
+          plan=(docs/*Endpoint*.pdf docs/*Endpoint*.md)
+          sql=(docs/*.sql)
+          [ ${#erd[@]} -gt 0 ]  || { echo "::error::No ERD in docs"; exit 1; }
+          [ ${#plan[@]} -gt 0 ] || { echo "::error::No endpoint plan in docs"; exit 1; }
+          [ ${#sql[@]} -gt 0 ]  || { echo "::error::No .sql script in docs"; exit 1; }
+          echo "docs folder is complete."
+      - name: Check the projects and README are present
+        run: |
+          set -e
+          test -f RaceDay.Api/RaceDay.Api.csproj
+          test -f RaceDay.Api.Tests/RaceDay.Api.Tests.csproj
+          test -f README.md
+          echo "Project structure is correct."
+
+  build-and-test:
+    name: Build and run unit tests
+    runs-on: ubuntu-latest
+    needs: validate-structure
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - run: dotnet restore RaceDay.sln
+      - run: dotnet build RaceDay.sln --configuration Release --no-restore
+      - run: dotnet test RaceDay.sln --configuration Release --no-build --verbosity normal
