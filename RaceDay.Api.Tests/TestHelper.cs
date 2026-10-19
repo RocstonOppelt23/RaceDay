@@ -20,14 +20,6 @@ public static class TestHelper
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString());
 
-        // Ensure EF Core internal services are available to the context by
-        // creating a dedicated service provider for the in-memory provider.
-        var serviceProvider = new Microsoft.Extensions.DependencyInjection.ServiceCollection()
-            .AddEntityFrameworkInMemoryDatabase()
-            .BuildServiceProvider();
-
-        optionsBuilder.UseInternalServiceProvider(serviceProvider);
-
         var context = new AppDbContext(optionsBuilder.Options);
         // Force model initialization and ensure the in-memory database is created
         context.Database.EnsureCreated();

@@ -37,6 +37,7 @@ public class AppDbContext : DbContext
         // ---------- UserProfiles : one profile per user ----------
         modelBuilder.Entity<UserProfile>(entity =>
         {
+            entity.HasKey(p => p.ProfileId);
             entity.Property(p => p.PhoneNumber).HasMaxLength(30);
             entity.Property(p => p.ProfilePictureUrl).HasMaxLength(500);
 
