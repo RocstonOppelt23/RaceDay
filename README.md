@@ -86,10 +86,9 @@ On SQL Server Express, change the server to `localhost\SQLEXPRESS`. Use whatever
 
 ### 3. Create the database
 
-Code-first, in the Package Manager Console with `RaceDay.Api` as the default project:
+The `InitialCreate` migration is already in the repo. In the Package Manager Console, with `RaceDay.Api` as the default project, run:
 
 ```
-Add-Migration InitialCreate
 Update-Database
 ```
 
