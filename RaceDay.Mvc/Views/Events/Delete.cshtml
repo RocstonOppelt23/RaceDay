@@ -1,0 +1,22 @@
+@model EventViewModel
+@{
+    ViewData["Title"] = "Delete Event";
+}
+<h1 class="page-title">Delete this event?</h1>
+<p class="page-subtitle">This can't be undone.</p>
+
+<div class="rd-card form-card">
+    <div class="card-body">
+        <h2 class="h5 mb-1">@Model.Name</h2>
+        <p class="event-meta">@Model.EventDate.ToString("dddd d MMMM yyyy") &middot; @Model.Location &middot; @Model.Distance.ToString("0.##") km</p>
+        <div class="alert alert-warning small">
+            Events that already have entrants can't be deleted, so no participant's entry is ever lost.
+            Its categories are removed with it.
+        </div>
+        <form asp-action="Delete" method="post">
+            <input type="hidden" name="id" value="@Model.EventId" />
+            <button type="submit" class="btn btn-danger">Yes, delete it</button>
+            <a asp-action="ManageIndex" class="btn btn-link">Keep it</a>
+        </form>
+    </div>
+</div>

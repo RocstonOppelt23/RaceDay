@@ -1,0 +1,62 @@
+@model List<EventViewModel>
+@{
+    ViewData["Title"] = "My Events";
+}
+<div class="d-flex flex-wrap justify-content-between align-items-end">
+    <div>
+        <h1 class="page-title">My events</h1>
+        <p class="page-subtitle">Everything you organise, upcoming first.</p>
+    </div>
+    <a class="btn btn-gold mb-4" asp-action="Create">+ Create event</a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="empty-state">You haven't created any events yet. <a asp-action="Create">Create one now</a>.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-rd mb-0">
+            <thead>
+                <tr>
+                    <th style="width: 90px"></th>
+                    <th>Event</th>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Distance</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ev in Model)
+                {
+                    <tr>
+                        <td>
+                            @if (!string.IsNullOrEmpty(ev.BannerImageUrl))
+                            {
+                                <img src="@ev.BannerImageUrl" alt="" style="width:80px;height:48px;object-fit:cover;border-radius:4px" />
+                            }
+                        </td>
+                        <td>
+                            <a class="fw-semibold" asp-action="Details" asp-route-id="@ev.EventId">@ev.Name</a>
+                            <div class="small text-muted">@ev.Location</div>
+                        </td>
+                        <td>
+                            @ev.EventDate.ToString("d MMM yyyy")
+                            @if (!ev.IsUpcoming) { <span class="badge bg-secondary ms-1">Past</span> }
+                        </td>
+                        <td><span class="badge badge-type @ev.EventType">@ev.EventType</span></td>
+                        <td>@ev.Distance.ToString("0.##") km</td>
+                        <td class="text-end text-nowrap">
+                            <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@ev.EventId">Edit</a>
+                            <a class="btn btn-sm btn-outline-secondary" asp-controller="Categories" asp-action="Manage" asp-route-eventId="@ev.EventId">Categories</a>
+                            <a class="btn btn-sm btn-outline-secondary" asp-controller="Enrolments" asp-action="EventEnrolments" asp-route-eventId="@ev.EventId">Entrants</a>
+                            <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@ev.EventId">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
