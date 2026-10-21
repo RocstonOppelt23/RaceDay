@@ -1,0 +1,58 @@
+@model List<EnrolmentViewModel>
+@{
+    ViewData["Title"] = "My Enrolments";
+}
+<h1 class="page-title">My enrolments</h1>
+<p class="page-subtitle">Events you've entered. <span class="badge badge-confirmed">Active</span> means you're in; <span class="badge badge-cancelled">Cancelled</span> means you withdrew.</p>
+
+@if (!Model.Any())
+{
+    <div class="empty-state">You haven't entered any events yet. <a asp-controller="Events" asp-action="Browse">Browse events</a>.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-rd mb-0">
+            <thead>
+                <tr>
+                    <th>Event</th>
+                    <th>Event date</th>
+                    <th>Category</th>
+                    <th>Entered on</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var e in Model)
+                {
+                    string badgeClass = e.Status switch
+                    {
+                        "Active" => "badge-confirmed",      // green
+                        "Confirmed" => "badge-confirmed",   // green
+                        "Pending" => "badge-pending",       // amber
+                        _ => "badge-cancelled"              // red
+                    };
+                    bool upcoming = e.EventDate is DateTime d && d.Date >= DateTime.Today;
+                    <tr class="@(e.IsActive ? "" : "row-cancelled")">
+                        <td><a asp-controller="Events" asp-action="Details" asp-route-id="@e.EventId">@e.EventName</a></td>
+                        <td>@e.EventDate?.ToString("d MMM yyyy")</td>
+                        <td>@e.CategoryName</td>
+                        <td>@e.EnrolmentDate.ToLocalTime().ToString("d MMM yyyy")</td>
+                        <td><span class="badge @badgeClass">@e.Status</span></td>
+                        <td class="text-end">
+                            @if (e.IsActive && upcoming)
+                            {
+                                <form asp-action="Cancel" method="post" class="d-inline"
+                                      onsubmit="return confirm('Cancel your entry for @e.EventName?');">
+                                    <input type="hidden" name="id" value="@e.EnrolmentId" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Cancel entry</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
