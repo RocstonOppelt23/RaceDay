@@ -1,0 +1,71 @@
+@model CategoryManageViewModel
+@{
+    ViewData["Title"] = "Categories";
+}
+<a asp-controller="Events" asp-action="Details" asp-route-id="@Model.Event.EventId" class="small d-inline-block mt-3">&larr; Back to @Model.Event.Name</a>
+<h1 class="page-title mt-1">Categories</h1>
+<p class="page-subtitle">Age or distance groups participants can enter for <strong>@Model.Event.Name</strong>.</p>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        @if (!Model.Categories.Any())
+        {
+            <div class="empty-state">No categories yet. Participants can only enter once at least one category exists.</div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-rd mb-0">
+                    <thead>
+                        <tr><th>Category</th><th>Description</th><th></th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var c in Model.Categories)
+                        {
+                            <tr>
+                                <td class="fw-semibold">@c.Name</td>
+                                <td class="text-muted">@c.Description</td>
+                                <td class="text-end">
+                                    <form asp-action="Delete" method="post" class="d-inline"
+                                          onsubmit="return confirm('Remove the @c.Name category?');">
+                                        <input type="hidden" name="id" value="@c.CategoryId" />
+                                        <input type="hidden" name="eventId" value="@Model.Event.EventId" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <p class="small text-muted mt-2">A category that already has entrants can't be removed.</p>
+        }
+    </div>
+
+    <div class="col-lg-5">
+        <div class="rd-card">
+            <div class="card-body">
+                <h2 class="h5">Add a category</h2>
+                <form asp-action="Add" method="post" novalidate>
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                    <input type="hidden" asp-for="NewCategory.EventId" />
+                    <div class="mb-3">
+                        <label asp-for="NewCategory.Name" class="form-label"></label>
+                        <input asp-for="NewCategory.Name" class="form-control" placeholder="e.g. Open 10km, Veterans 50+" />
+                        <span asp-validation-for="NewCategory.Name" class="small"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="NewCategory.Description" class="form-label"></label>
+                        <textarea asp-for="NewCategory.Description" class="form-control" rows="2"></textarea>
+                        <span asp-validation-for="NewCategory.Description" class="small"></span>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add category</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
