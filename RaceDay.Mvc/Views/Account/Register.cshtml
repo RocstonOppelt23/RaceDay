@@ -1,0 +1,59 @@
+@model RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+}
+<h1 class="page-title">Create an account</h1>
+<p class="page-subtitle">Organisers run events. Participants enter them.</p>
+
+<div class="rd-card form-card">
+    <div class="card-body">
+        <form asp-action="Register" method="post" novalidate>
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+            <div class="row">
+                <div class="col-sm-6 mb-3">
+                    <label asp-for="FirstName" class="form-label"></label>
+                    <input asp-for="FirstName" class="form-control" autocomplete="given-name" />
+                    <span asp-validation-for="FirstName" class="small"></span>
+                </div>
+                <div class="col-sm-6 mb-3">
+                    <label asp-for="LastName" class="form-label"></label>
+                    <input asp-for="LastName" class="form-control" autocomplete="family-name" />
+                    <span asp-validation-for="LastName" class="small"></span>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" autocomplete="email" />
+                <span asp-validation-for="Email" class="small"></span>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 mb-3">
+                    <label asp-for="Password" class="form-label"></label>
+                    <input asp-for="Password" class="form-control" autocomplete="new-password" />
+                    <span asp-validation-for="Password" class="small"></span>
+                </div>
+                <div class="col-sm-6 mb-3">
+                    <label asp-for="ConfirmPassword" class="form-label"></label>
+                    <input asp-for="ConfirmPassword" class="form-control" autocomplete="new-password" />
+                    <span asp-validation-for="ConfirmPassword" class="small"></span>
+                </div>
+            </div>
+            <div class="mb-4">
+                <label asp-for="Role" class="form-label"></label>
+                <select asp-for="Role" class="form-select">
+                    <option value="">-- Choose one --</option>
+                    <option value="Participant">Participant (I want to enter events)</option>
+                    <option value="Organiser">Organiser (I run events)</option>
+                </select>
+                <span asp-validation-for="Role" class="small"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Create account</button>
+            <span class="ms-3 small">Already registered? <a asp-action="Login">Log in</a></span>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

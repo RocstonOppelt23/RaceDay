@@ -1,0 +1,21 @@
+@{
+    ViewData["Title"] = "Access denied";
+    var role = Context.Session.GetString(SessionKeys.Role);
+}
+<div class="empty-state mt-5">
+    <h1 class="h3">That page isn't available to you</h1>
+    <p>You're logged in as @(role == null ? "a guest" : role == Roles.Organiser ? "an organiser" : "a participant").
+       This page belongs to the other role.</p>
+    @if (role == Roles.Organiser)
+    {
+        <a class="btn btn-primary" asp-controller="Dashboard" asp-action="Index">Back to your dashboard</a>
+    }
+    else if (role == Roles.Participant)
+    {
+        <a class="btn btn-primary" asp-controller="Events" asp-action="Browse">Back to events</a>
+    }
+    else
+    {
+        <a class="btn btn-primary" asp-controller="Account" asp-action="Login">Log in</a>
+    }
+</div>
