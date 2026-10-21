@@ -1,0 +1,79 @@
+@{
+    var role = Context.Session.GetString(SessionKeys.Role);
+    var fullName = Context.Session.GetString(SessionKeys.FullName);
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+    var action = ViewContext.RouteData.Values["action"]?.ToString();
+    string Active(string c, string? a = null) =>
+        controller == c && (a == null || action == a) ? "active" : "";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - RaceDay</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-md navbar-dark raceday-navbar">
+            <div class="container">
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">Race<span>Day</span></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+                        aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="mainNav">
+                    <ul class="navbar-nav me-auto">
+                        @if (role == Roles.Organiser)
+                        {
+                            <li class="nav-item"><a class="nav-link @Active("Dashboard")" asp-controller="Dashboard" asp-action="Index">Dashboard</a></li>
+                            <li class="nav-item"><a class="nav-link @Active("Events")" asp-controller="Events" asp-action="ManageIndex">My Events</a></li>
+                            <li class="nav-item"><a class="nav-link @Active("Enrolments")" asp-controller="Enrolments" asp-action="Index">Enrolments</a></li>
+                            <li class="nav-item"><a class="nav-link @Active("Results")" asp-controller="Results" asp-action="Index">Results</a></li>
+                        }
+                        else if (role == Roles.Participant)
+                        {
+                            <li class="nav-item"><a class="nav-link @Active("Events")" asp-controller="Events" asp-action="Browse">Browse Events</a></li>
+                            <li class="nav-item"><a class="nav-link @Active("Enrolments")" asp-controller="Enrolments" asp-action="MyEnrolments">My Enrolments</a></li>
+                            <li class="nav-item"><a class="nav-link @Active("Results")" asp-controller="Results" asp-action="MyResults">My Results</a></li>
+                            <li class="nav-item"><a class="nav-link @Active("Profile")" asp-controller="Profile" asp-action="Index">Profile</a></li>
+                        }
+                        else
+                        {
+                            <li class="nav-item"><a class="nav-link @Active("Home", "Index")" asp-controller="Home" asp-action="Index">Home</a></li>
+                            <li class="nav-item"><a class="nav-link @Active("Account", "Register")" asp-controller="Account" asp-action="Register">Register</a></li>
+                            <li class="nav-item"><a class="nav-link @Active("Account", "Login")" asp-controller="Account" asp-action="Login">Log In</a></li>
+                        }
+                    </ul>
+                    @if (role != null)
+                    {
+                        <ul class="navbar-nav align-items-md-center">
+                            <li class="nav-item user-chip me-md-3">
+                                @fullName <span class="role-pill">@role</span>
+                            </li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Account" asp-action="Logout">Log Out</a></li>
+                        </ul>
+                    }
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <main role="main" class="pb-4">
+            <partial name="_StatusMessages" />
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">&copy; @DateTime.Now.Year RaceDay &middot; Road running, walking and cycling events in South Africa</div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

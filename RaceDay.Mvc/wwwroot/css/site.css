@@ -1,0 +1,115 @@
+/* ===== RaceDay brand ===== */
+:root {
+    --raceday-navy: #1F4E79;
+    --raceday-navy-dark: #163A5B;
+    --raceday-gold: #C99A2E;
+    --raceday-red: #B00020;
+    --raceday-green: #1E8E3E;
+    --raceday-ink: #1A1A1A;
+    --raceday-muted: #5B6573;
+    --raceday-bg: #F4F6F9;
+    --raceday-border: #DDE3EA;
+}
+
+html { font-size: 15px; position: relative; min-height: 100%; }
+@media (min-width: 768px) { html { font-size: 16px; } }
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    color: var(--raceday-ink);
+    background-color: var(--raceday-bg);
+    margin-bottom: 70px;
+}
+
+h1, h2, h3, h4, h5 { font-weight: 700; color: var(--raceday-navy-dark); }
+.page-title { margin: 1.5rem 0 0.25rem; }
+.page-subtitle { color: var(--raceday-muted); margin-bottom: 1.5rem; }
+
+a { color: var(--raceday-navy); }
+a:hover { color: var(--raceday-navy-dark); }
+
+/* ===== Navigation ===== */
+.raceday-navbar { background-color: var(--raceday-navy); border-bottom: 4px solid var(--raceday-gold); }
+.raceday-navbar .navbar-brand { font-weight: 800; letter-spacing: .5px; }
+.raceday-navbar .navbar-brand span { color: var(--raceday-gold); }
+.raceday-navbar .nav-link { color: rgba(255,255,255,.85); }
+.raceday-navbar .nav-link:hover,
+.raceday-navbar .nav-link.active { color: #fff; }
+.raceday-navbar .user-chip { color: #fff; font-size: .9rem; }
+.role-pill { background: var(--raceday-gold); color: var(--raceday-ink); border-radius: 999px; padding: .1rem .55rem; font-size: .75rem; font-weight: 700; margin-left: .35rem; }
+
+/* ===== Buttons ===== */
+.btn-primary { background-color: var(--raceday-navy); border-color: var(--raceday-navy); }
+.btn-primary:hover, .btn-primary:focus { background-color: var(--raceday-navy-dark); border-color: var(--raceday-navy-dark); }
+.btn-gold { background-color: var(--raceday-gold); border-color: var(--raceday-gold); color: var(--raceday-ink); font-weight: 600; }
+.btn-gold:hover { background-color: #b5881f; border-color: #b5881f; color: var(--raceday-ink); }
+.btn-outline-primary { color: var(--raceday-navy); border-color: var(--raceday-navy); }
+.btn-outline-primary:hover { background-color: var(--raceday-navy); border-color: var(--raceday-navy); }
+
+/* ===== Hero ===== */
+.hero {
+    background: linear-gradient(135deg, var(--raceday-navy-dark), var(--raceday-navy));
+    color: #fff; border-radius: 12px; padding: 3rem 2rem; margin: 1.5rem 0 2rem;
+}
+.hero h1 { color: #fff; font-size: 2.4rem; }
+.hero .lead { color: rgba(255,255,255,.85); }
+.hero .accent { color: var(--raceday-gold); }
+
+/* ===== Cards ===== */
+.rd-card { background: #fff; border: 1px solid var(--raceday-border); border-radius: 10px; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+.rd-card .card-body { padding: 1.25rem; }
+.event-card { height: 100%; transition: box-shadow .15s ease, transform .15s ease; overflow: hidden; }
+.event-card:hover { box-shadow: 0 6px 18px rgba(31,78,121,.15); transform: translateY(-2px); }
+.event-card .event-thumb { height: 150px; width: 100%; object-fit: cover; }
+.event-placeholder {
+    height: 150px; display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, var(--raceday-navy), #2C6AA0);
+    color: rgba(255,255,255,.9); font-weight: 800; font-size: 1.6rem; letter-spacing: 1px;
+}
+.event-meta { color: var(--raceday-muted); font-size: .9rem; }
+.event-date { color: var(--raceday-navy); font-weight: 700; font-size: .9rem; text-transform: uppercase; }
+
+.event-banner { width: 100%; max-height: 320px; object-fit: cover; border-radius: 10px; }
+.banner-preview { max-height: 140px; border-radius: 6px; border: 1px solid var(--raceday-border); }
+
+/* ===== Stat tiles (dashboard) ===== */
+.stat-tile { background: #fff; border: 1px solid var(--raceday-border); border-left: 5px solid var(--raceday-navy); border-radius: 10px; padding: 1rem 1.25rem; }
+.stat-tile .stat-value { font-size: 2rem; font-weight: 800; color: var(--raceday-navy-dark); line-height: 1.1; }
+.stat-tile .stat-label { color: var(--raceday-muted); font-size: .85rem; text-transform: uppercase; letter-spacing: .5px; }
+.stat-tile.gold { border-left-color: var(--raceday-gold); }
+.stat-tile.green { border-left-color: var(--raceday-green); }
+
+/* ===== Status badges (colour-coded) ===== */
+.badge-confirmed { background-color: var(--raceday-green); color: #fff; }
+.badge-pending { background-color: var(--raceday-gold); color: var(--raceday-ink); }
+.badge-cancelled { background-color: var(--raceday-red); color: #fff; }
+.badge-type { background-color: #E7EEF6; color: var(--raceday-navy-dark); font-weight: 600; }
+.badge-type.Run { background-color: #E3EEF9; }
+.badge-type.Walk { background-color: #EAF6EC; color: #17692F; }
+.badge-type.Cycle { background-color: #FBF2DE; color: #7A5A12; }
+
+.position-medal { display: inline-block; min-width: 2.2rem; text-align: center; border-radius: 999px; padding: .15rem .5rem; font-weight: 800; background: #E7EEF6; color: var(--raceday-navy-dark); }
+.position-medal.p1 { background: #F5D36B; color: #5A4300; }
+.position-medal.p2 { background: #D9DEE5; color: #39424E; }
+.position-medal.p3 { background: #E8B98A; color: #5C3410; }
+
+/* ===== Tables ===== */
+.table-rd { background: #fff; border-radius: 10px; overflow: hidden; border: 1px solid var(--raceday-border); }
+.table-rd thead th { background: var(--raceday-navy); color: #fff; font-weight: 600; border: 0; }
+.table-rd td, .table-rd th { vertical-align: middle; }
+.row-cancelled td { color: #8A939F; }
+
+/* ===== Forms ===== */
+.form-card { max-width: 640px; }
+.form-label { font-weight: 600; }
+.field-validation-error, .validation-summary-errors { color: var(--raceday-red); }
+.validation-summary-valid { display: none; }
+.input-validation-error { border-color: var(--raceday-red); }
+
+/* ===== Profile ===== */
+.avatar { width: 128px; height: 128px; border-radius: 50%; object-fit: cover; border: 4px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+.avatar-placeholder { width: 128px; height: 128px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--raceday-navy); color: #fff; font-size: 2.6rem; font-weight: 800; }
+
+/* ===== Empty states & footer ===== */
+.empty-state { background: #fff; border: 2px dashed var(--raceday-border); border-radius: 10px; padding: 2.5rem 1rem; text-align: center; color: var(--raceday-muted); }
+.footer { position: absolute; bottom: 0; width: 100%; line-height: 60px; background: #fff; }

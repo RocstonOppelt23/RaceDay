@@ -1,0 +1,22 @@
+@model EventViewModel
+<div class="rd-card event-card">
+    @if (!string.IsNullOrEmpty(Model.BannerImageUrl))
+    {
+        <img src="@Model.BannerImageUrl" class="event-thumb" alt="Banner for @Model.Name" />
+    }
+    else
+    {
+        <div class="event-placeholder">@Model.EventType.ToUpperInvariant()</div>
+    }
+    <div class="card-body">
+        <div class="event-date mb-1">@Model.EventDate.ToString("ddd d MMM yyyy") &middot; @Model.EventDate.ToString("HH:mm")</div>
+        <h5 class="mb-1">@Model.Name</h5>
+        <div class="event-meta mb-2">@Model.Location &middot; @Model.Distance.ToString("0.##") km</div>
+        <span class="badge badge-type @Model.EventType">@Model.EventType</span>
+        @if (ViewData["ShowLink"] as bool? != false)
+        {
+            <a asp-controller="Events" asp-action="Details" asp-route-id="@Model.EventId" class="stretched-link"
+               aria-label="View @Model.Name"></a>
+        }
+    </div>
+</div>
