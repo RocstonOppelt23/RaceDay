@@ -6,7 +6,6 @@ using RaceDay.Mvc.ViewModels;
 
 namespace RaceDay.Mvc.Controllers;
 
-/// <summary>Participant: view and update their profile, including a profile picture.</summary>
 [RequireSessionRole(Roles.Participant)]
 public class ProfileController : Controller
 {
@@ -61,7 +60,6 @@ public class ProfileController : Controller
 
         if (!ModelState.IsValid) return View(model);
 
-        // 1. The text details (the API keeps the existing picture URL we send back).
         var response = await _api.PutAsync("/api/users/profile", new
         {
             model.FirstName,
@@ -78,7 +76,6 @@ public class ProfileController : Controller
             return View(model);
         }
 
-        // 2. The picture, if one was chosen: posted to the API, which stores it in Azure Blob Storage.
         if (profilePicture is { Length: > 0 })
         {
             using var content = new MultipartFormDataContent();
@@ -96,7 +93,6 @@ public class ProfileController : Controller
             }
         }
 
-        // Keep the name in the navigation bar in step with the profile.
         HttpContext.Session.SetString(SessionKeys.FullName, $"{model.FirstName} {model.LastName}".Trim());
 
         TempData["Message"] = "Your profile has been updated.";

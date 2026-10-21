@@ -7,10 +7,6 @@ using RaceDay.Mvc.ViewModels;
 
 namespace RaceDay.Mvc.Controllers;
 
-/// <summary>
-/// Participant: browse and view events.
-/// Organiser: list, create, edit and delete their own events (with banner upload).
-/// </summary>
 public class EventsController : Controller
 {
     private readonly IApiClient _api;
@@ -22,8 +18,6 @@ public class EventsController : Controller
     {
         _api = api;
     }
-
-    // ---------- Participant-facing ----------
 
     [RequireSessionRole(Roles.Participant)]
     public async Task<IActionResult> Browse(string? type, DateTime? fromDate, string? search)
@@ -52,7 +46,6 @@ public class EventsController : Controller
         });
     }
 
-    /// <summary>Full event details. Any logged-in user.</summary>
     [RequireSessionRole]
     public async Task<IActionResult> Details(int id)
     {
@@ -82,8 +75,6 @@ public class EventsController : Controller
 
         return View(model);
     }
-
-    // ---------- Organiser-facing ----------
 
     [RequireSessionRole(Roles.Organiser)]
     public async Task<IActionResult> ManageIndex()
@@ -171,7 +162,6 @@ public class EventsController : Controller
         return RedirectToAction(nameof(Details), new { id = model.EventId });
     }
 
-    /// <summary>Confirmation page before deleting.</summary>
     [RequireSessionRole(Roles.Organiser)]
     [HttpGet]
     public async Task<IActionResult> Delete(int id)
@@ -199,8 +189,6 @@ public class EventsController : Controller
         return RedirectToAction(nameof(ManageIndex));
     }
 
-    // ---------- Helpers ----------
-
     private void ValidateBanner(IFormFile? banner)
     {
         if (banner is null || banner.Length == 0) return;
@@ -211,10 +199,6 @@ public class EventsController : Controller
             ModelState.AddModelError("banner", "The banner must be a JPG, PNG, WEBP or GIF image.");
     }
 
-    /// <summary>
-    /// Multipart form: the event fields and the banner image travel to the API
-    /// in the same request. Field names match the API's EventDto and "bannerImage".
-    /// </summary>
     private static MultipartFormDataContent BuildEventForm(EventFormViewModel model, IFormFile? banner)
     {
         var content = new MultipartFormDataContent

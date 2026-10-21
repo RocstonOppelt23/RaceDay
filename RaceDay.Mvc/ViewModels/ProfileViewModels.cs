@@ -2,7 +2,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RaceDay.Mvc.ViewModels;
 
-/// <summary>What GET /api/users/profile returns.</summary>
 public class ProfileViewModel
 {
     public int UserId { get; set; }
@@ -17,7 +16,6 @@ public class ProfileViewModel
     public string FullName => $"{FirstName} {LastName}".Trim();
 }
 
-/// <summary>The Edit Profile form.</summary>
 public class ProfileFormViewModel
 {
     [Required, StringLength(50), Display(Name = "First name")]

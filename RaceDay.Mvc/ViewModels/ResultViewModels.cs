@@ -3,7 +3,6 @@ using System.Text.Json.Serialization;
 
 namespace RaceDay.Mvc.ViewModels;
 
-/// <summary>A result as returned by GET /api/results/my or GET /api/events/{id}/results.</summary>
 public class ResultViewModel
 {
     public int ResultId { get; set; }
@@ -24,7 +23,6 @@ public class ResultViewModel
     public int FinishingPosition { get; set; }
 }
 
-/// <summary>The Capture Result form.</summary>
 public class ResultFormViewModel
 {
     public int EnrolmentId { get; set; }
@@ -43,7 +41,6 @@ public class ResultFormViewModel
     public int FinishingPosition { get; set; } = 1;
 }
 
-/// <summary>Organiser's results page for one event.</summary>
 public class EventResultsViewModel
 {
     public EventViewModel Event { get; set; } = new();

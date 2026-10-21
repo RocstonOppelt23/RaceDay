@@ -213,7 +213,7 @@ public class EventsControllerTests
     public void GetUpcomingEvents_ReturnsOnlyFutureEvents_WithoutALogin()
     {
         using var context = TestHelper.NewContext();
-        var (organiser, _, _, _) = TestHelper.Seed(context);   // seeded event is in 2027
+        var (organiser, _, _, _) = TestHelper.Seed(context);
         context.Events.Add(new RaceDay.Api.Models.Event
         {
             OrganiserId = organiser.UserId,

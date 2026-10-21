@@ -3,11 +3,6 @@ using Azure.Storage.Blobs.Models;
 
 namespace RaceDay.Api.Services;
 
-/// <summary>
-/// Azure Blob Storage implementation. The connection string lives in
-/// appsettings.json under AzureBlobStorage:ConnectionString
-/// ("UseDevelopmentStorage=true" points at the local Azurite emulator).
-/// </summary>
 public class BlobStorageService : IBlobStorageService
 {
     private readonly string _connectionString;
@@ -23,10 +18,8 @@ public class BlobStorageService : IBlobStorageService
     {
         var containerClient = new BlobContainerClient(_connectionString, containerName);
 
-        // Public read access on blobs so the browser can show banners and profile pictures.
         await containerClient.CreateIfNotExistsAsync(PublicAccessType.Blob);
 
-        // A GUID prefix keeps two uploads with the same file name from overwriting each other.
         string safeName = Path.GetFileName(file.FileName).Replace(' ', '-');
         string blobName = $"{Guid.NewGuid()}_{safeName}";
 

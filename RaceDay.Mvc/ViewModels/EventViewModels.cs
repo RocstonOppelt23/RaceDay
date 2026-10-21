@@ -3,7 +3,6 @@ using System.Text.Json.Serialization;
 
 namespace RaceDay.Mvc.ViewModels;
 
-/// <summary>An event as returned by GET /api/events and GET /api/events/{id}.</summary>
 public class EventViewModel
 {
     public int EventId { get; set; }
@@ -24,7 +23,6 @@ public class EventViewModel
     public bool IsUpcoming => EventDate.Date >= DateTime.Today;
 }
 
-/// <summary>The Create / Edit event form.</summary>
 public class EventFormViewModel : IValidatableObject
 {
     public int EventId { get; set; }
@@ -51,7 +49,6 @@ public class EventFormViewModel : IValidatableObject
     [Display(Name = "Event type")]
     public string EventType { get; set; } = "Run";
 
-    /// <summary>Banner already stored for this event (Edit only).</summary>
     public string? ExistingBannerUrl { get; set; }
 
     public bool IsNew => EventId == 0;
@@ -63,7 +60,6 @@ public class EventFormViewModel : IValidatableObject
     }
 }
 
-/// <summary>A category as returned by GET /api/events/{id}/categories.</summary>
 public class CategoryViewModel
 {
     public int CategoryId { get; set; }
@@ -90,18 +86,15 @@ public class CategoryManageViewModel
     public CategoryFormViewModel NewCategory { get; set; } = new();
 }
 
-/// <summary>Event details plus what the logged-in participant has already entered.</summary>
 public class EventDetailsViewModel
 {
     public EventViewModel Event { get; set; } = new();
     public string? Role { get; set; }
     public bool IsOwner { get; set; }
 
-    /// <summary>Category ids the participant is actively entered in.</summary>
     public HashSet<int> EnteredCategoryIds { get; set; } = new();
 }
 
-/// <summary>Browse page: the events plus the filter values.</summary>
 public class BrowseEventsViewModel
 {
     public List<EventViewModel> Events { get; set; } = new();

@@ -28,10 +28,10 @@ else
                 {
                     string badgeClass = e.Status switch
                     {
-                        "Active" => "badge-confirmed",      // green
-                        "Confirmed" => "badge-confirmed",   // green
-                        "Pending" => "badge-pending",       // amber
-                        _ => "badge-cancelled"              // red
+                        "Active" => "badge-confirmed",
+                        "Confirmed" => "badge-confirmed",
+                        "Pending" => "badge-pending",
+                        _ => "badge-cancelled"
                     };
                     bool upcoming = e.EventDate is DateTime d && d.Date >= DateTime.Today;
                     <tr class="@(e.IsActive ? "" : "row-cancelled")">

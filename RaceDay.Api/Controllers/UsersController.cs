@@ -16,7 +16,6 @@ public class UsersController : ControllerBase
     private readonly AppDbContext _context;
     private readonly IBlobStorageService _blobStorage;
 
-    /// <summary>Blob container that holds profile pictures.</summary>
     public const string ProfilePictureContainer = "profile-pictures";
 
     public UsersController(AppDbContext context, IBlobStorageService blobStorage)

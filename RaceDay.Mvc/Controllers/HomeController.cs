@@ -14,7 +14,6 @@ public class HomeController : Controller
         _api = api;
     }
 
-    /// <summary>Public home page: upcoming events, no login needed.</summary>
     public async Task<IActionResult> Index()
     {
         var events = await _api.GetAsync<List<EventViewModel>>("/api/events/upcoming") ?? new();
@@ -28,7 +27,6 @@ public class HomeController : Controller
         return View();
     }
 
-    /// <summary>Friendly page for 404s and other status codes.</summary>
     [ActionName("StatusCode")]
     public IActionResult HttpStatus(int code)
     {

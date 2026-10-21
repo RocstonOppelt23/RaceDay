@@ -4,11 +4,6 @@ using RaceDay.Mvc.Infrastructure;
 
 namespace RaceDay.Mvc.Filters;
 
-/// <summary>
-/// Protects MVC actions (not API endpoints). Reads the LOCAL MVC session set at login:
-/// nobody logged in → Login page; wrong role → Access Denied page.
-/// [RequireSessionRole] with no role just requires a login.
-/// </summary>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
 public class RequireSessionRoleAttribute : ActionFilterAttribute
 {
@@ -27,7 +22,6 @@ public class RequireSessionRoleAttribute : ActionFilterAttribute
 
         if (string.IsNullOrEmpty(role))
         {
-            // Send them back to where they were going once they've logged in.
             var request = context.HttpContext.Request;
             string returnUrl = request.Path + request.QueryString;
             context.Result = new RedirectToActionResult("Login", "Account", new { returnUrl });

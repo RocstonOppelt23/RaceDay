@@ -6,7 +6,6 @@ using RaceDay.Mvc.ViewModels;
 
 namespace RaceDay.Mvc.Controllers;
 
-/// <summary>The Organiser's landing page.</summary>
 [RequireSessionRole(Roles.Organiser)]
 public class DashboardController : Controller
 {

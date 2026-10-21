@@ -6,7 +6,6 @@ using RaceDay.Mvc.ViewModels;
 
 namespace RaceDay.Mvc.Controllers;
 
-/// <summary>Organiser: age and distance categories for one event.</summary>
 [RequireSessionRole(Roles.Organiser)]
 public class CategoriesController : Controller
 {

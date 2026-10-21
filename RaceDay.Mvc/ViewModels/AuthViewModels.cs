@@ -38,7 +38,6 @@ public class LoginViewModel
     public string? ReturnUrl { get; set; }
 }
 
-/// <summary>What POST /api/auth/login returns.</summary>
 public class LoginResult
 {
     public int UserId { get; set; }

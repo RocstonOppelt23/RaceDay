@@ -7,10 +7,6 @@ using RaceDay.Mvc.ViewModels;
 
 namespace RaceDay.Mvc.Controllers;
 
-/// <summary>
-/// Organiser: capture finish times and positions, and see each event's results.
-/// Participant: see their own race history.
-/// </summary>
 public class ResultsController : Controller
 {
     private readonly IApiClient _api;
@@ -20,9 +16,6 @@ public class ResultsController : Controller
         _api = api;
     }
 
-    // ---------- Organiser ----------
-
-    /// <summary>The organiser's events, with how many results have been captured.</summary>
     [RequireSessionRole(Roles.Organiser)]
     public async Task<IActionResult> Index()
     {
@@ -45,7 +38,6 @@ public class ResultsController : Controller
         return View(rows);
     }
 
-    /// <summary>Published results for one event, fastest first.</summary>
     [RequireSessionRole(Roles.Organiser)]
     public async Task<IActionResult> EventResults(int eventId)
     {
@@ -69,7 +61,6 @@ public class ResultsController : Controller
     {
         if (enrolmentId <= 0)
         {
-            // Opened from the menu without an entrant: pick an event first.
             return RedirectToAction(nameof(Index));
         }
 
@@ -122,8 +113,6 @@ public class ResultsController : Controller
         TempData["Message"] = $"Result published for {model.ParticipantName}.";
         return RedirectToAction("EventEnrolments", "Enrolments", new { eventId = model.EventId });
     }
-
-    // ---------- Participant ----------
 
     [RequireSessionRole(Roles.Participant)]
     public async Task<IActionResult> MyResults()

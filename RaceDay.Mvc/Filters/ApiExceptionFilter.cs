@@ -5,10 +5,6 @@ using RaceDay.Mvc.Services;
 
 namespace RaceDay.Mvc.Filters;
 
-/// <summary>
-/// Catches the two API problems a user can actually hit and shows a friendly
-/// page instead of a raw error screen.
-/// </summary>
 public class ApiExceptionFilter : IExceptionFilter
 {
     private readonly ITempDataDictionaryFactory _tempDataFactory;

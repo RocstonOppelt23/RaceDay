@@ -3,10 +3,6 @@ using RaceDay.Api.Services;
 
 namespace RaceDay.Api.Tests;
 
-/// <summary>
-/// Stands in for Azure Blob Storage in tests: records each upload and returns
-/// a predictable URL, so no storage account or emulator is needed.
-/// </summary>
 public class FakeBlobStorageService : IBlobStorageService
 {
     public List<(string Container, string FileName)> Uploads { get; } = new();
@@ -17,7 +13,6 @@ public class FakeBlobStorageService : IBlobStorageService
         return Task.FromResult($"https://fake.blob.core.windows.net/{containerName}/{file.FileName}");
     }
 
-    /// <summary>Builds an in-memory upload for tests.</summary>
     public static IFormFile Image(string fileName = "banner.png", string contentType = "image/png", int bytes = 128)
     {
         var stream = new MemoryStream(new byte[bytes]);

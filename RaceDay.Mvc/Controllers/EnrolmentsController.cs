@@ -6,10 +6,6 @@ using RaceDay.Mvc.ViewModels;
 
 namespace RaceDay.Mvc.Controllers;
 
-/// <summary>
-/// Participant: enter an event, see and cancel their entries.
-/// Organiser: see who has entered their events.
-/// </summary>
 public class EnrolmentsController : Controller
 {
     private readonly IApiClient _api;
@@ -18,8 +14,6 @@ public class EnrolmentsController : Controller
     {
         _api = api;
     }
-
-    // ---------- Participant ----------
 
     [RequireSessionRole(Roles.Participant)]
     [HttpPost]
@@ -36,7 +30,6 @@ public class EnrolmentsController : Controller
 
         if (!response.IsSuccessStatusCode)
         {
-            // The API explains why: already entered (409), wrong category (400), etc.
             TempData["Error"] = await ApiErrors.ReadMessageAsync(response,
                 "You are already enrolled, or the event/category is invalid.");
             return RedirectToAction("Details", "Events", new { id = eventId });
@@ -71,9 +64,6 @@ public class EnrolmentsController : Controller
         return RedirectToAction(nameof(MyEnrolments));
     }
 
-    // ---------- Organiser ----------
-
-    /// <summary>All of the organiser's events with their entrant counts.</summary>
     [RequireSessionRole(Roles.Organiser)]
     public async Task<IActionResult> Index()
     {
@@ -94,7 +84,6 @@ public class EnrolmentsController : Controller
         return View(rows);
     }
 
-    /// <summary>Everyone entered for one event, with their category, status and any result.</summary>
     [RequireSessionRole(Roles.Organiser)]
     public async Task<IActionResult> EventEnrolments(int eventId)
     {

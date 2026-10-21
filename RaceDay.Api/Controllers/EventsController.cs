@@ -16,7 +16,6 @@ public class EventsController : ControllerBase
     private readonly AppDbContext _context;
     private readonly IBlobStorageService _blobStorage;
 
-    /// <summary>Blob container that holds event banner images.</summary>
     public const string BannerContainer = "event-banners";
 
     public EventsController(AppDbContext context, IBlobStorageService blobStorage)

@@ -6,8 +6,6 @@ using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Form posts (multipart event create/edit) bind numbers and dates with the
-// server's culture. Fix it to invariant so "21.1" km parses the same everywhere.
 CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
 CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
 
@@ -26,7 +24,6 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Azure Blob Storage for event banners and profile pictures
 builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
 
 // Session state

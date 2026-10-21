@@ -6,7 +6,6 @@ using RaceDay.Mvc.ViewModels;
 
 namespace RaceDay.Mvc.Controllers;
 
-/// <summary>Register, log in and log out — all through the Part 2 API.</summary>
 public class AccountController : Controller
 {
     private readonly IApiClient _api;
@@ -49,7 +48,6 @@ public class AccountController : Controller
     [HttpGet]
     public IActionResult Login(string? returnUrl = null)
     {
-        // Already logged in: go straight to the right landing page.
         if (HttpContext.Session.GetString(SessionKeys.Role) is string role)
             return RedirectToLanding(role);
 
@@ -62,7 +60,6 @@ public class AccountController : Controller
     {
         if (!ModelState.IsValid) return View(model);
 
-        // Start from a clean session so an old API cookie is never reused.
         HttpContext.Session.Clear();
 
         var response = await _api.PostAsync("/api/auth/login", new { model.Email, model.Password });
@@ -92,12 +89,11 @@ public class AccountController : Controller
 
     public async Task<IActionResult> Logout()
     {
-        // End the API session too (best effort), then clear the MVC session.
         if (HttpContext.Session.GetString(SessionKeys.ApiCookie) is not null)
         {
             try { await _api.PostAsync<object?>("/api/auth/logout", null); }
-            catch (ApiUnavailableException) { /* still log out locally */ }
-            catch (ApiSessionExpiredException) { /* already gone on the API side */ }
+            catch (ApiUnavailableException) { }
+            catch (ApiSessionExpiredException) { }
         }
 
         HttpContext.Session.Clear();
