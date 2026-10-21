@@ -1,0 +1,35 @@
+@model List<OrganiserEventSummary>
+@{
+    ViewData["Title"] = "Enrolments";
+}
+<h1 class="page-title">Enrolments</h1>
+<p class="page-subtitle">Choose an event to see who has entered.</p>
+
+@if (!Model.Any())
+{
+    <div class="empty-state">You have no events yet. <a asp-controller="Events" asp-action="Create">Create one</a>.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-rd mb-0">
+            <thead>
+                <tr><th>Event</th><th>Date</th><th>Type</th><th class="text-center">Active entrants</th><th></th></tr>
+            </thead>
+            <tbody>
+                @foreach (var row in Model)
+                {
+                    <tr>
+                        <td class="fw-semibold">@row.Event.Name</td>
+                        <td>@row.Event.EventDate.ToString("d MMM yyyy") @if (!row.Event.IsUpcoming) { <span class="badge bg-secondary ms-1">Past</span> }</td>
+                        <td><span class="badge badge-type @row.Event.EventType">@row.Event.EventType</span></td>
+                        <td class="text-center fw-bold">@row.EnrolmentCount</td>
+                        <td class="text-end">
+                            <a class="btn btn-sm btn-primary" asp-action="EventEnrolments" asp-route-eventId="@row.Event.EventId">View entrants</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
