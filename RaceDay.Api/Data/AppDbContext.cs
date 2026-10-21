@@ -57,6 +57,7 @@ public class AppDbContext : DbContext
             entity.Property(e => e.Location).HasMaxLength(255).IsRequired();
             entity.Property(e => e.EventType).HasMaxLength(20).IsRequired();
             entity.Property(e => e.Distance).HasColumnType("decimal(6,2)");
+            entity.Property(e => e.BannerImageUrl).HasMaxLength(500);
 
             entity.HasOne(e => e.Organiser)
                   .WithMany(u => u.Events)

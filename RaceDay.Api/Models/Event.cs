@@ -14,6 +14,9 @@ public class Event
     public decimal Distance { get; set; }
     public string EventType { get; set; } = string.Empty;
 
+    /// <summary>Public URL of the event banner in Azure Blob Storage, if one was uploaded.</summary>
+    public string? BannerImageUrl { get; set; }
+
     public ICollection<Category> Categories { get; set; } = new List<Category>();
     public ICollection<Enrolment> Enrolments { get; set; } = new List<Enrolment>();
 }
