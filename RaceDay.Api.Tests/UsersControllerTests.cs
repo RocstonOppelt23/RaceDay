@@ -14,7 +14,7 @@ public class UsersControllerTests
         using var context = TestHelper.NewContext();
         var (organiser, participant, _, _) = TestHelper.Seed(context);
 
-        var controller = new UsersController(context);
+        var controller = new UsersController(context, new FakeBlobStorageService());
         TestHelper.SignIn(controller, participant.UserId, "Participant");
 
         var ok = Assert.IsType<OkObjectResult>(controller.GetMyProfile());
@@ -31,7 +31,7 @@ public class UsersControllerTests
         using var context = TestHelper.NewContext();
         var (_, participant, _, _) = TestHelper.Seed(context);
 
-        var controller = new UsersController(context);
+        var controller = new UsersController(context, new FakeBlobStorageService());
         TestHelper.SignIn(controller, participant.UserId, "Participant");
 
         var result = controller.UpdateMyProfile(new UpdateProfileDto(
@@ -52,7 +52,7 @@ public class UsersControllerTests
         using var context = TestHelper.NewContext();
         var (_, participant, _, _) = TestHelper.Seed(context);
 
-        var controller = new UsersController(context);
+        var controller = new UsersController(context, new FakeBlobStorageService());
         TestHelper.SignIn(controller, participant.UserId, "Participant");
 
         // organiser@raceday.co.za already belongs to the seeded organiser.
@@ -68,7 +68,7 @@ public class UsersControllerTests
         using var context = TestHelper.NewContext();
         var (_, participant, _, _) = TestHelper.Seed(context);
 
-        var controller = new UsersController(context);
+        var controller = new UsersController(context, new FakeBlobStorageService());
         TestHelper.SignIn(controller, participant.UserId, "Participant");
 
         var result = controller.UpdateMyProfile(new UpdateProfileDto(
@@ -83,9 +83,56 @@ public class UsersControllerTests
         using var context = TestHelper.NewContext();
         var (organiser, _, _, _) = TestHelper.Seed(context);
 
-        var controller = new UsersController(context);
+        var controller = new UsersController(context, new FakeBlobStorageService());
         TestHelper.SignIn(controller, organiser.UserId, "Organiser");
 
         Assert.IsType<NotFoundObjectResult>(controller.GetUser(9999));
+    }
+
+    [Fact]
+    public async Task UploadProfilePicture_StoresTheImageAndSavesTheUrlOnTheProfile()
+    {
+        using var context = TestHelper.NewContext();
+        var (_, participant, _, _) = TestHelper.Seed(context);
+
+        var blobs = new FakeBlobStorageService();
+        var controller = new UsersController(context, blobs);
+        TestHelper.SignIn(controller, participant.UserId, "Participant");
+
+        var result = await controller.UploadProfilePicture(FakeBlobStorageService.Image("sipho.jpg", "image/jpeg"));
+
+        Assert.IsType<OkObjectResult>(result);
+        Assert.Equal(UsersController.ProfilePictureContainer, Assert.Single(blobs.Uploads).Container);
+        Assert.EndsWith("/profile-pictures/sipho.jpg",
+            context.UserProfiles.Single(p => p.UserId == participant.UserId).ProfilePictureUrl);
+    }
+
+    [Fact]
+    public async Task UploadProfilePicture_WithAnOversizedImage_IsRejected()
+    {
+        using var context = TestHelper.NewContext();
+        var (_, participant, _, _) = TestHelper.Seed(context);
+
+        var blobs = new FakeBlobStorageService();
+        var controller = new UsersController(context, blobs);
+        TestHelper.SignIn(controller, participant.UserId, "Participant");
+
+        var tooBig = FakeBlobStorageService.Image("huge.png", "image/png", (int)RaceDay.Api.Services.ImageUpload.MaxBytes + 1);
+        var result = await controller.UploadProfilePicture(tooBig);
+
+        Assert.IsType<BadRequestObjectResult>(result);
+        Assert.Empty(blobs.Uploads);
+    }
+
+    [Fact]
+    public async Task UploadProfilePicture_WithNoFile_IsRejected()
+    {
+        using var context = TestHelper.NewContext();
+        var (_, participant, _, _) = TestHelper.Seed(context);
+
+        var controller = new UsersController(context, new FakeBlobStorageService());
+        TestHelper.SignIn(controller, participant.UserId, "Participant");
+
+        Assert.IsType<BadRequestObjectResult>(await controller.UploadProfilePicture(null));
     }
 }

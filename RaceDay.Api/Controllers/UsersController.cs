@@ -4,6 +4,7 @@ using RaceDay.Api.Data;
 using RaceDay.Api.Dtos;
 using RaceDay.Api.Filters;
 using RaceDay.Api.Models;
+using RaceDay.Api.Services;
 
 namespace RaceDay.Api.Controllers;
 
@@ -13,7 +14,16 @@ namespace RaceDay.Api.Controllers;
 public class UsersController : ControllerBase
 {
     private readonly AppDbContext _context;
-    public UsersController(AppDbContext context) => _context = context;
+    private readonly IBlobStorageService _blobStorage;
+
+    /// <summary>Blob container that holds profile pictures.</summary>
+    public const string ProfilePictureContainer = "profile-pictures";
+
+    public UsersController(AppDbContext context, IBlobStorageService blobStorage)
+    {
+        _context = context;
+        _blobStorage = blobStorage;
+    }
 
     /// <summary>Returns the logged-in user's own profile.</summary>
     /// <remarks>The user id is read from the session, never from the request, so a user can only see their own record.</remarks>
@@ -98,6 +108,46 @@ public class UsersController : ControllerBase
             user.Profile.DateOfBirth,
             user.Profile.ProfilePictureUrl
         });
+    }
+
+    /// <summary>Uploads a new profile picture for the logged-in user.</summary>
+    /// <remarks>
+    /// Sent as multipart/form-data with a "profilePicture" file. The image is stored in
+    /// Azure Blob Storage and its URL saved on the user's profile.
+    /// </remarks>
+    /// <response code="200">Picture uploaded. Returns the new picture URL.</response>
+    /// <response code="400">No file, or not a supported image.</response>
+    /// <response code="401">Not logged in.</response>
+    /// <response code="404">The account no longer exists.</response>
+    [HttpPost("profile/picture")]
+    [RequireLogin]
+    [Consumes("multipart/form-data")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(404)]
+    public async Task<IActionResult> UploadProfilePicture(IFormFile? profilePicture)
+    {
+        if (profilePicture is null) return BadRequest("Choose an image to upload.");
+
+        var error = ImageUpload.Validate(profilePicture);
+        if (error is not null) return BadRequest(error);
+
+        int userId = HttpContext.Session.GetInt32("UserId")!.Value;
+
+        var user = _context.Users
+            .Include(u => u.Profile)
+            .SingleOrDefault(u => u.UserId == userId);
+
+        if (user is null) return NotFound("Profile not found.");
+
+        string url = await _blobStorage.UploadAsync(profilePicture, ProfilePictureContainer);
+
+        user.Profile ??= new UserProfile { UserId = userId };
+        user.Profile.ProfilePictureUrl = url;
+        _context.SaveChanges();
+
+        return Ok(new { ProfilePictureUrl = url });
     }
 
     /// <summary>Returns another user's basic information. Organisers only.</summary>
