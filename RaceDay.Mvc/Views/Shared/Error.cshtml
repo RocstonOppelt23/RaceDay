@@ -1,0 +1,12 @@
+@{
+    ViewData["Title"] = "Something went wrong";
+}
+<div class="empty-state mt-5">
+    <h1 class="h3">Something went wrong</h1>
+    <p>We couldn't complete that request. Please go back and try again.</p>
+    <a class="btn btn-primary" asp-controller="Home" asp-action="Index">Back to RaceDay</a>
+    @if (ViewBag.RequestId is string id)
+    {
+        <p class="small mt-3 mb-0">Reference: <code>@id</code></p>
+    }
+</div>
