@@ -1,0 +1,53 @@
+@model List<EventViewModel>
+@{
+    ViewData["Title"] = "Home";
+    var role = Context.Session.GetString(SessionKeys.Role);
+}
+<section class="hero">
+    <div class="row align-items-center">
+        <div class="col-lg-8">
+            <h1>Find your next <span class="accent">race day</span>.</h1>
+            <p class="lead mb-4">Road runs, walks and cycle events across South Africa. Enter in a couple of clicks and track your results in one place.</p>
+            @if (role == null)
+            {
+                <a class="btn btn-gold btn-lg me-2" asp-controller="Account" asp-action="Register">Create an account</a>
+                <a class="btn btn-outline-light btn-lg" asp-controller="Account" asp-action="Login">Log in</a>
+            }
+            else if (role == Roles.Organiser)
+            {
+                <a class="btn btn-gold btn-lg" asp-controller="Dashboard" asp-action="Index">Go to your dashboard</a>
+            }
+            else
+            {
+                <a class="btn btn-gold btn-lg" asp-controller="Events" asp-action="Browse">Browse all events</a>
+            }
+        </div>
+    </div>
+</section>
+
+<div class="d-flex justify-content-between align-items-end mb-3">
+    <div>
+        <h2 class="h4 mb-0">Upcoming events</h2>
+        <div class="text-muted small">The next events on the calendar</div>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="empty-state">No upcoming events yet. Check back soon.</div>
+}
+else
+{
+    <div class="row g-4">
+        @foreach (var ev in Model)
+        {
+            <div class="col-md-6 col-lg-4">
+                <partial name="_EventCard" model="ev" />
+            </div>
+        }
+    </div>
+    @if (role == null)
+    {
+        <p class="text-muted small mt-3">Log in or register to see full details and enter.</p>
+    }
+}
