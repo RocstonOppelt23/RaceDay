@@ -4,6 +4,7 @@ using RaceDay.Api.Data;
 using RaceDay.Api.Dtos;
 using RaceDay.Api.Filters;
 using RaceDay.Api.Models;
+using RaceDay.Api.Services;
 
 namespace RaceDay.Api.Controllers;
 
@@ -13,7 +14,16 @@ namespace RaceDay.Api.Controllers;
 public class EventsController : ControllerBase
 {
     private readonly AppDbContext _context;
-    public EventsController(AppDbContext context) => _context = context;
+    private readonly IBlobStorageService _blobStorage;
+
+    /// <summary>Blob container that holds event banner images.</summary>
+    public const string BannerContainer = "event-banners";
+
+    public EventsController(AppDbContext context, IBlobStorageService blobStorage)
+    {
+        _context = context;
+        _blobStorage = blobStorage;
+    }
 
     private static readonly string[] ValidEventTypes = { "Run", "Walk", "Cycle" };
 
@@ -37,7 +47,38 @@ public class EventsController : ControllerBase
                 e.Distance,
                 e.EventType,
                 e.OrganiserId,
-                Organiser = e.Organiser!.FirstName + " " + e.Organiser.LastName
+                Organiser = e.Organiser!.FirstName + " " + e.Organiser.LastName,
+                e.BannerImageUrl
+            })
+            .ToList();
+
+        return Ok(events);
+    }
+
+    /// <summary>Lists upcoming events for the public home page. No login needed.</summary>
+    /// <remarks>Only events dated today or later are returned, soonest first.</remarks>
+    /// <response code="200">Upcoming events returned.</response>
+    [HttpGet("upcoming")]
+    [ProducesResponseType(200)]
+    public IActionResult GetUpcomingEvents()
+    {
+        var today = DateTime.Today;
+
+        var events = _context.Events
+            .Where(e => e.EventDate >= today)
+            .OrderBy(e => e.EventDate)
+            .Select(e => new
+            {
+                e.EventId,
+                e.Name,
+                e.Description,
+                e.EventDate,
+                e.Location,
+                e.Distance,
+                e.EventType,
+                e.OrganiserId,
+                Organiser = e.Organiser!.FirstName + " " + e.Organiser.LastName,
+                e.BannerImageUrl
             })
             .ToList();
 
@@ -68,6 +109,7 @@ public class EventsController : ControllerBase
                 e.EventType,
                 e.OrganiserId,
                 Organiser = e.Organiser!.FirstName + " " + e.Organiser.LastName,
+                e.BannerImageUrl,
                 Categories = e.Categories.Select(c => new { c.CategoryId, c.Name, c.Description })
             })
             .SingleOrDefault();
@@ -77,10 +119,14 @@ public class EventsController : ControllerBase
         return Ok(item);
     }
 
-    /// <summary>Creates a new event. Organisers only.</summary>
-    /// <remarks>The organiser is taken from the session, so an event is always created under the logged-in organiser's name.</remarks>
+    /// <summary>Creates a new event, with an optional banner image. Organisers only.</summary>
+    /// <remarks>
+    /// Sent as multipart/form-data so the banner travels in the same request as the event fields.
+    /// The banner is stored in Azure Blob Storage and its URL saved on the event.
+    /// The organiser is taken from the session, so an event is always created under the logged-in organiser's name.
+    /// </remarks>
     /// <response code="201">Event created.</response>
-    /// <response code="400">Required details missing, or an invalid event type or distance.</response>
+    /// <response code="400">Required details missing, an invalid event type or distance, or an unsupported image.</response>
     /// <response code="401">Not logged in.</response>
     /// <response code="403">Logged in as a Participant.</response>
     [HttpPost]
@@ -89,9 +135,10 @@ public class EventsController : ControllerBase
     [ProducesResponseType(400)]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public IActionResult CreateEvent(EventDto request)
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> CreateEvent([FromForm] EventDto request, IFormFile? bannerImage = null)
     {
-        var error = Validate(request);
+        var error = Validate(request) ?? ValidateBanner(bannerImage);
         if (error is not null) return BadRequest(error);
 
         int organiserId = HttpContext.Session.GetInt32("UserId")!.Value;
@@ -107,19 +154,23 @@ public class EventsController : ControllerBase
             EventType = request.EventType
         };
 
+        if (bannerImage is not null)
+            item.BannerImageUrl = await _blobStorage.UploadAsync(bannerImage, BannerContainer);
+
         _context.Events.Add(item);
         _context.SaveChanges();
 
         return CreatedAtAction(nameof(GetEvent), new { id = item.EventId }, new
         {
             item.EventId, item.Name, item.Description, item.EventDate,
-            item.Location, item.Distance, item.EventType, item.OrganiserId
+            item.Location, item.Distance, item.EventType, item.OrganiserId, item.BannerImageUrl
         });
     }
 
-    /// <summary>Updates an event. Organisers only, and only their own events.</summary>
+    /// <summary>Updates an event, optionally replacing its banner image. Organisers only, and only their own events.</summary>
+    /// <remarks>Sent as multipart/form-data. Leaving the banner out keeps the existing one.</remarks>
     /// <response code="200">Event updated.</response>
-    /// <response code="400">Required details missing, or an invalid event type or distance.</response>
+    /// <response code="400">Required details missing, an invalid event type or distance, or an unsupported image.</response>
     /// <response code="401">Not logged in.</response>
     /// <response code="403">Logged in as a Participant, or not the organiser of this event.</response>
     /// <response code="404">No event with that id.</response>
@@ -130,9 +181,10 @@ public class EventsController : ControllerBase
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
     [ProducesResponseType(404)]
-    public IActionResult UpdateEvent(int id, EventDto request)
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> UpdateEvent(int id, [FromForm] EventDto request, IFormFile? bannerImage = null)
     {
-        var error = Validate(request);
+        var error = Validate(request) ?? ValidateBanner(bannerImage);
         if (error is not null) return BadRequest(error);
 
         int organiserId = HttpContext.Session.GetInt32("UserId")!.Value;
@@ -149,12 +201,15 @@ public class EventsController : ControllerBase
         item.Distance = request.Distance;
         item.EventType = request.EventType;
 
+        if (bannerImage is not null)
+            item.BannerImageUrl = await _blobStorage.UploadAsync(bannerImage, BannerContainer);
+
         _context.SaveChanges();
 
         return Ok(new
         {
             item.EventId, item.Name, item.Description, item.EventDate,
-            item.Location, item.Distance, item.EventType, item.OrganiserId
+            item.Location, item.Distance, item.EventType, item.OrganiserId, item.BannerImageUrl
         });
     }
 
@@ -202,4 +257,7 @@ public class EventsController : ControllerBase
             return "Event type must be Run, Walk or Cycle.";
         return null;
     }
+
+    private static string? ValidateBanner(IFormFile? bannerImage) =>
+        bannerImage is null ? null : ImageUpload.Validate(bannerImage);
 }
