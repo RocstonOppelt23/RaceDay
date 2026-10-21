@@ -1,0 +1,36 @@
+@model ResultFormViewModel
+@{
+    ViewData["Title"] = "Capture Result";
+}
+<a asp-controller="Enrolments" asp-action="EventEnrolments" asp-route-eventId="@Model.EventId" class="small d-inline-block mt-3">&larr; Back to entrants</a>
+<h1 class="page-title mt-1">Capture result</h1>
+<p class="page-subtitle"><strong>@Model.ParticipantName</strong> &middot; @Model.CategoryName &middot; @Model.EventName</p>
+
+<div class="rd-card form-card" style="max-width: 480px;">
+    <div class="card-body">
+        <form asp-action="Capture" method="post" novalidate>
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+            <input type="hidden" asp-for="EnrolmentId" />
+            <input type="hidden" asp-for="EventId" />
+            <input type="hidden" asp-for="ParticipantName" />
+            <input type="hidden" asp-for="CategoryName" />
+            <input type="hidden" asp-for="EventName" />
+
+            <div class="mb-3">
+                <label asp-for="FinishTime" class="form-label"></label>
+                <input asp-for="FinishTime" class="form-control" placeholder="00:52:35" />
+                <span asp-validation-for="FinishTime" class="small"></span>
+            </div>
+            <div class="mb-4">
+                <label asp-for="FinishingPosition" class="form-label"></label>
+                <input asp-for="FinishingPosition" type="number" min="1" class="form-control" />
+                <span asp-validation-for="FinishingPosition" class="small"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Publish result</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

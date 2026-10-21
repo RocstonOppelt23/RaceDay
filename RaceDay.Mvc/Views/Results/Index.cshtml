@@ -1,0 +1,38 @@
+@model List<OrganiserEventSummary>
+@{
+    ViewData["Title"] = "Results";
+}
+<h1 class="page-title">Results</h1>
+<p class="page-subtitle">Capture finish times from an event's entrant list, then view the published results here.</p>
+
+@if (!Model.Any())
+{
+    <div class="empty-state">You have no events yet.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-rd mb-0">
+            <thead>
+                <tr><th>Event</th><th>Date</th><th class="text-center">Results captured</th><th></th></tr>
+            </thead>
+            <tbody>
+                @foreach (var row in Model)
+                {
+                    <tr>
+                        <td class="fw-semibold">@row.Event.Name</td>
+                        <td>@row.Event.EventDate.ToString("d MMM yyyy")</td>
+                        <td class="text-center">
+                            <span class="fw-bold">@row.ResultCount</span>
+                            <span class="text-muted">/ @row.EnrolmentCount</span>
+                        </td>
+                        <td class="text-end text-nowrap">
+                            <a class="btn btn-sm btn-gold" asp-controller="Enrolments" asp-action="EventEnrolments" asp-route-eventId="@row.Event.EventId">Capture results</a>
+                            <a class="btn btn-sm btn-outline-primary" asp-action="EventResults" asp-route-eventId="@row.Event.EventId">View results</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

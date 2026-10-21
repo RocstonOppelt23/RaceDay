@@ -1,0 +1,36 @@
+@model EventResultsViewModel
+@{
+    ViewData["Title"] = "Event Results";
+}
+<a asp-action="Index" class="small d-inline-block mt-3">&larr; All events</a>
+<h1 class="page-title mt-1">Results: @Model.Event.Name</h1>
+<p class="page-subtitle">@Model.Event.EventDate.ToString("dddd d MMMM yyyy") &middot; @Model.Event.Distance.ToString("0.##") km @Model.Event.EventType.ToLowerInvariant()</p>
+
+@if (!Model.Results.Any())
+{
+    <div class="empty-state">
+        No results captured yet.
+        <a asp-controller="Enrolments" asp-action="EventEnrolments" asp-route-eventId="@Model.Event.EventId">Capture them from the entrant list</a>.
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-rd mb-0">
+            <thead>
+                <tr><th>Position</th><th>Participant</th><th>Category</th><th>Finish time</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var r in Model.Results)
+                {
+                    <tr>
+                        <td><span class="position-medal @(r.FinishingPosition <= 3 ? $"p{r.FinishingPosition}" : "")">@r.FinishingPosition</span></td>
+                        <td class="fw-semibold">@r.ParticipantName</td>
+                        <td>@r.CategoryName</td>
+                        <td>@r.FinishTime.ToString(@"hh\:mm\:ss")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
