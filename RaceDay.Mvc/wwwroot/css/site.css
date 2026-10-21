@@ -105,6 +105,9 @@ a:hover { color: var(--raceday-navy-dark); }
 .field-validation-error, .validation-summary-errors { color: var(--raceday-red); }
 .validation-summary-valid { display: none; }
 .input-validation-error { border-color: var(--raceday-red); }
+/* Reserve room for each field's message so the form never jumps when an
+   error appears or clears (a jump can make the first click on Submit miss). */
+span[data-valmsg-for] { display: block; min-height: 1.25rem; font-size: .85rem; }
 
 /* ===== Profile ===== */
 .avatar { width: 128px; height: 128px; border-radius: 50%; object-fit: cover; border: 4px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
