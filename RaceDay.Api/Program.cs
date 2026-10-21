@@ -1,4 +1,5 @@
 using RaceDay.Api.Data;
+using RaceDay.Api.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -18,6 +19,9 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Azure Blob Storage for event banners and profile pictures
+builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
 
 // Session state
 builder.Services.AddDistributedMemoryCache();
