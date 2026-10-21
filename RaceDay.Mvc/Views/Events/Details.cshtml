@@ -1,0 +1,94 @@
+@model EventDetailsViewModel
+@{
+    var ev = Model.Event;
+    ViewData["Title"] = ev.Name;
+}
+<div class="mt-4">
+    @if (!string.IsNullOrEmpty(ev.BannerImageUrl))
+    {
+        <img src="@ev.BannerImageUrl" class="event-banner mb-4" alt="Banner for @ev.Name" />
+    }
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="event-date">@ev.EventDate.ToString("dddd d MMMM yyyy") &middot; starts @ev.EventDate.ToString("HH:mm")</div>
+            <h1 class="mb-2">@ev.Name</h1>
+            <div class="mb-3">
+                <span class="badge badge-type @ev.EventType">@ev.EventType</span>
+                <span class="event-meta ms-2">@ev.Location &middot; @ev.Distance.ToString("0.##") km &middot; organised by @ev.OrganiserName</span>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(ev.Description))
+            {
+                <p style="white-space: pre-line">@ev.Description</p>
+            }
+            @if (!ev.IsUpcoming)
+            {
+                <div class="alert alert-secondary">This event has already taken place.</div>
+            }
+        </div>
+
+        <div class="col-lg-4">
+            <div class="rd-card">
+                <div class="card-body">
+                    <h2 class="h5">Categories</h2>
+                    @if (!ev.Categories.Any())
+                    {
+                        <p class="text-muted mb-0">No categories have been added yet.</p>
+                    }
+                    else if (Model.Role == Roles.Participant && ev.IsUpcoming)
+                    {
+                        <form asp-controller="Enrolments" asp-action="Enrol" method="post">
+                            <input type="hidden" name="eventId" value="@ev.EventId" />
+                            @foreach (var c in ev.Categories)
+                            {
+                                bool entered = Model.EnteredCategoryIds.Contains(c.CategoryId);
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="categoryId" id="cat-@c.CategoryId"
+                                           value="@c.CategoryId" disabled="@entered" />
+                                    <label class="form-check-label" for="cat-@c.CategoryId">
+                                        <span class="fw-semibold">@c.Name</span>
+                                        @if (entered) { <span class="badge badge-confirmed ms-1">Entered</span> }
+                                        @if (!string.IsNullOrWhiteSpace(c.Description)) { <br /><span class="small text-muted">@c.Description</span> }
+                                    </label>
+                                </div>
+                            }
+                            @if (ev.Categories.All(c => Model.EnteredCategoryIds.Contains(c.CategoryId)))
+                            {
+                                <p class="small text-muted mb-0">You're entered in every category for this event.</p>
+                            }
+                            else
+                            {
+                                <button type="submit" class="btn btn-gold w-100 mt-2">Enter this event</button>
+                            }
+                        </form>
+                    }
+                    else
+                    {
+                        <ul class="list-unstyled mb-0">
+                            @foreach (var c in ev.Categories)
+                            {
+                                <li class="mb-2">
+                                    <span class="fw-semibold">@c.Name</span>
+                                    @if (!string.IsNullOrWhiteSpace(c.Description)) { <br /><span class="small text-muted">@c.Description</span> }
+                                </li>
+                            }
+                        </ul>
+                    }
+                </div>
+            </div>
+
+            @if (Model.IsOwner)
+            {
+                <div class="rd-card mt-3">
+                    <div class="card-body d-grid gap-2">
+                        <h2 class="h6 mb-1">Manage this event</h2>
+                        <a class="btn btn-primary" asp-action="Edit" asp-route-id="@ev.EventId">Edit event</a>
+                        <a class="btn btn-outline-primary" asp-controller="Categories" asp-action="Manage" asp-route-eventId="@ev.EventId">Manage categories</a>
+                        <a class="btn btn-outline-primary" asp-controller="Enrolments" asp-action="EventEnrolments" asp-route-eventId="@ev.EventId">View entrants</a>
+                        <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@ev.EventId">Delete event</a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,52 @@
+@model BrowseEventsViewModel
+@{
+    ViewData["Title"] = "Browse Events";
+    string[] types = { "Run", "Walk", "Cycle" };
+}
+<h1 class="page-title">Browse events</h1>
+<p class="page-subtitle">Upcoming runs, walks and cycle events you can enter.</p>
+
+<form method="get" asp-action="Browse" class="rd-card mb-4">
+    <div class="card-body row g-3 align-items-end">
+        <div class="col-md-4">
+            <label for="search" class="form-label">Search</label>
+            <input id="search" name="search" value="@Model.Search" class="form-control" placeholder="Event name or place" />
+        </div>
+        <div class="col-md-3">
+            <label for="type" class="form-label">Event type</label>
+            <select id="type" name="type" class="form-select">
+                <option value="">All types</option>
+                @foreach (var t in types)
+                {
+                    <option value="@t" selected="@(Model.Type == t)">@t</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="fromDate" class="form-label">On or after</label>
+            <input id="fromDate" name="fromDate" type="date" value="@Model.FromDate?.ToString("yyyy-MM-dd")" class="form-control" />
+        </div>
+        <div class="col-md-2 d-flex gap-2">
+            <button type="submit" class="btn btn-primary flex-grow-1">Filter</button>
+            <a asp-action="Browse" class="btn btn-outline-secondary">Clear</a>
+        </div>
+    </div>
+</form>
+
+<p class="text-muted small">@Model.Events.Count event@(Model.Events.Count == 1 ? "" : "s") found</p>
+
+@if (!Model.Events.Any())
+{
+    <div class="empty-state">No upcoming events match those filters. Try clearing them.</div>
+}
+else
+{
+    <div class="row g-4">
+        @foreach (var ev in Model.Events)
+        {
+            <div class="col-md-6 col-lg-4">
+                <partial name="_EventCard" model="ev" />
+            </div>
+        }
+    </div>
+}
