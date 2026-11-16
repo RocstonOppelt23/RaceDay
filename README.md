@@ -336,4 +336,12 @@ The Dockerfile is multi-stage: the .NET SDK image restores, builds and publishes
 
 ## AI usage disclosure
 
-AI assistance was used during this project for code scaffolding, explanation of Entity Framework Core relationship configuration, and review of test coverage. All code was reviewed, built and tested locally before being committed.
+AI tools were used in this project, in line with the IIE's guidance on declaring AI use.
+
+| Part | Tool | What it was used for |
+|---|---|---|
+| Part 1 | Claude (Anthropic) | Checking the ERD, SQL script and endpoint plan lined up with each other |
+| Part 2 | Claude (Anthropic) | Code scaffolding for controllers and tests, explaining EF Core relationship setup, reviewing test coverage, fixing NuGet audit warnings that blocked EF tools |
+| Part 3 | Claude (Anthropic) | Generating the MVC controllers, views, view models and `ApiClient`, the Blob Storage service, the Dockerfile and CI updates, the MVC unit tests, and drafting this README |
+
+How I used it: I set the requirements from the brief and my Part 2 API, then reviewed, ran and tested the generated code before committing it. Design decisions were mine, for example routing all MVC data access through the API instead of a second database, and passing the API session cookie through the MVC session so role checks keep working. I can explain and change any part of the code.
