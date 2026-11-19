@@ -85,7 +85,8 @@ public class ResultsController : ControllerBase
                 r.Enrolment.Event.EventDate,
                 Category = r.Enrolment.Category!.Name,
                 r.FinishTime,
-                r.FinishingPosition
+                r.FinishingPosition,
+                TotalFinishers = _context.Results.Count(x => x.Enrolment!.EventId == r.Enrolment.EventId)
             })
             .ToList();
 

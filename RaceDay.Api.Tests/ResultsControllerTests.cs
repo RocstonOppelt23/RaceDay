@@ -121,6 +121,31 @@ public class ResultsControllerTests
     }
 
     [Fact]
+    public void GetMyResults_IncludesHowManyFinishedTheEvent()
+    {
+        using var context = TestHelper.NewContext();
+        var (_, participant, ev, category) = TestHelper.Seed(context);
+        var other = TestHelper.AddUser(context, "Aisha", "aisha@raceday.co.za", "Participant");
+
+        var mine = TestHelper.AddEnrolment(context, participant.UserId, ev.EventId, category.CategoryId);
+        var theirs = TestHelper.AddEnrolment(context, other.UserId, ev.EventId, category.CategoryId);
+
+        context.Results.AddRange(
+            new Result { EnrolmentId = mine.EnrolmentId, FinishTime = new TimeSpan(0, 52, 35), FinishingPosition = 2 },
+            new Result { EnrolmentId = theirs.EnrolmentId, FinishTime = new TimeSpan(0, 49, 10), FinishingPosition = 1 });
+        context.SaveChanges();
+
+        var controller = new ResultsController(context);
+        TestHelper.SignIn(controller, participant.UserId, "Participant");
+
+        var ok = Assert.IsType<OkObjectResult>(controller.GetMyResults());
+        var row = Assert.Single(Assert.IsAssignableFrom<System.Collections.IEnumerable>(ok.Value).Cast<object>());
+        var total = row.GetType().GetProperty("TotalFinishers")!.GetValue(row);
+
+        Assert.Equal(2, total);
+    }
+
+    [Fact]
     public void GetEventResults_ByTheOwningOrganiser_ListsEveryResult()
     {
         using var context = TestHelper.NewContext();
