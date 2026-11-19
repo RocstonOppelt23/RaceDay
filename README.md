@@ -23,7 +23,7 @@ Organisers create and manage events, define age or distance categories, see who 
 The GitHub Actions workflow (`.github/workflows/ci.yml`) runs three jobs on every push:
 
 1. **Validate repository structure** — docs, both projects, both test projects, the Dockerfile and README are present, and the MVC project has no database or Azure packages.
-2. **Build API and MVC, run unit tests** — restores and builds `RaceDay.Api` and `RaceDay.Mvc`, then runs all 83 unit tests (54 API, 29 MVC).
+2. **Build API and MVC, run unit tests** — restores and builds `RaceDay.Api` and `RaceDay.Mvc`, then runs all 95 unit tests (55 API, 40 MVC).
 3. **Build the MVC Docker image** — builds the image, starts the container with the documented `docker run` command and checks it serves pages.
 
 Part 3 build (`part3-mvc` branch):
@@ -61,7 +61,7 @@ RaceDay/
 │   ├── Models/                   User, UserProfile, Event, Category, Enrolment, Result
 │   ├── Services/                 Azure Blob Storage service and image checks
 │   └── Program.cs                Services, session and middleware setup
-├── RaceDay.Api.Tests/            xUnit test project — 54 tests
+├── RaceDay.Api.Tests/            xUnit test project — 55 tests
 ├── RaceDay.Mvc/                  ASP.NET Core MVC front end (no database of its own)
 │   ├── Controllers/              Account, Home, Dashboard, Events, Categories, Enrolments, Results, Profile
 │   ├── Services/                 IApiClient / ApiClient — the only way the MVC app reaches data
@@ -70,7 +70,7 @@ RaceDay/
 │   ├── Views/                    Razor views, with the role-aware menu in Shared/_Layout.cshtml
 │   ├── wwwroot/css/site.css      RaceDay brand colours and typography
 │   └── Dockerfile                Multi-stage build for the container
-├── RaceDay.Mvc.Tests/            xUnit test project — 29 tests
+├── RaceDay.Mvc.Tests/            xUnit test project — 40 tests
 ├── docs/                         Part 1 planning documents
 │   ├── RaceDay_ERD.png           Entity relationship diagram
 │   ├── API_Endpoint_Plan.pdf     Full endpoint table
@@ -310,7 +310,7 @@ The Dockerfile is multi-stage: the .NET SDK image restores, builds and publishes
 
 ### Part 3 unit tests
 
-29 tests in `RaceDay.Mvc.Tests`, plus 7 new API tests (54 in total for the API).
+40 tests in `RaceDay.Mvc.Tests`, plus 8 new API tests (55 in total for the API).
 
 | Area | Covered |
 |---|---|
