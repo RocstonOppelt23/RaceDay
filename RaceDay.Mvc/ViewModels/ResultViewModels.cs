@@ -21,6 +21,24 @@ public class ResultViewModel
 
     public TimeSpan FinishTime { get; set; }
     public int FinishingPosition { get; set; }
+    public int TotalFinishers { get; set; }
+
+    public string PositionText => TotalFinishers > 0
+        ? $"{Ordinal(FinishingPosition)} out of {TotalFinishers}"
+        : Ordinal(FinishingPosition);
+
+    public static string Ordinal(int n)
+    {
+        int lastTwo = n % 100;
+        if (lastTwo is 11 or 12 or 13) return $"{n}th";
+        return (n % 10) switch
+        {
+            1 => $"{n}st",
+            2 => $"{n}nd",
+            3 => $"{n}rd",
+            _ => $"{n}th"
+        };
+    }
 }
 
 public class ResultFormViewModel

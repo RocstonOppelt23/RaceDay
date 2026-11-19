@@ -36,7 +36,7 @@ else
                         <td>@r.EventDate?.ToString("d MMM yyyy")</td>
                         <td>@r.CategoryName</td>
                         <td>@r.FinishTime.ToString(@"hh\:mm\:ss")</td>
-                        <td><span class="position-medal @(r.FinishingPosition <= 3 ? $"p{r.FinishingPosition}" : "")">@r.FinishingPosition</span></td>
+                        <td><span class="position-medal @(r.FinishingPosition <= 3 ? $"p{r.FinishingPosition}" : "")">@r.FinishingPosition</span> <span class="text-muted small">@r.PositionText</span></td>
                     </tr>
                 }
             </tbody>
