@@ -14,8 +14,6 @@ Organisers create and manage events, define age or distance categories, see who 
 
 **[Watch the Part 2 video walkthrough](https://youtu.be/8Hr-RUQB_WE)**
 
-**Part 3 video walkthrough:** _add the unlisted YouTube link here_
-
 ---
 
 ## CI/CD build status
