@@ -21,7 +21,6 @@ public static class TestHelper
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString());
 
         var context = new AppDbContext(optionsBuilder.Options);
-        // Force model initialization and ensure the in-memory database is created
         context.Database.EnsureCreated();
         return context;
     }

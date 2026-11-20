@@ -25,7 +25,6 @@ public class AuthControllerTests
         Assert.Equal("rocky@raceday.co.za", saved.Email);
         Assert.Equal("Organiser", saved.Role);
 
-        // The plain password must never reach the database.
         Assert.NotEqual("Pass123!", saved.PasswordHash);
         Assert.True(BCrypt.Net.BCrypt.Verify("Pass123!", saved.PasswordHash));
     }

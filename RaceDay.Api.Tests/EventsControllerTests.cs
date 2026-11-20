@@ -30,7 +30,6 @@ public class EventsControllerTests
         Assert.IsType<CreatedAtActionResult>(result);
 
         var saved = context.Events.Single(e => e.Name == "Two Oceans Half");
-        // The owner comes from the session, never from the request body.
         Assert.Equal(organiser.UserId, saved.OrganiserId);
     }
 

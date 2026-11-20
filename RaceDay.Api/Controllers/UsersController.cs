@@ -81,7 +81,6 @@ public class UsersController : ControllerBase
 
         if (user is null) return NotFound("Profile not found.");
 
-        // Email is unique, so block a clash with another account.
         if (_context.Users.Any(u => u.Email == request.Email && u.UserId != userId))
             return BadRequest("That email address is already in use.");
 

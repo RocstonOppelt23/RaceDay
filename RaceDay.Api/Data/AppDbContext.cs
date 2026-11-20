@@ -20,7 +20,6 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // ---------- Users ----------
         modelBuilder.Entity<User>(entity =>
         {
             entity.Property(u => u.FirstName).HasMaxLength(50).IsRequired();
@@ -34,7 +33,6 @@ public class AppDbContext : DbContext
                 "CK_Users_Role", "[Role] IN ('Organiser', 'Participant')"));
         });
 
-        // ---------- UserProfiles : one profile per user ----------
         modelBuilder.Entity<UserProfile>(entity =>
         {
             entity.HasKey(p => p.ProfileId);
@@ -49,7 +47,6 @@ public class AppDbContext : DbContext
                   .OnDelete(DeleteBehavior.Cascade);
         });
 
-        // ---------- Events ----------
         modelBuilder.Entity<Event>(entity =>
         {
             entity.Property(e => e.Name).HasMaxLength(150).IsRequired();
@@ -71,7 +68,6 @@ public class AppDbContext : DbContext
             });
         });
 
-        // ---------- Categories ----------
         modelBuilder.Entity<Category>(entity =>
         {
             entity.Property(c => c.Name).HasMaxLength(100).IsRequired();
@@ -83,17 +79,13 @@ public class AppDbContext : DbContext
                   .OnDelete(DeleteBehavior.Cascade);
         });
 
-        // ---------- Enrolments ----------
         modelBuilder.Entity<Enrolment>(entity =>
         {
             entity.Property(e => e.Status).HasMaxLength(20).IsRequired().HasDefaultValue("Active");
             entity.Property(e => e.EnrolmentDate).HasDefaultValueSql("SYSUTCDATETIME()");
 
-            // UQ_Enrolments_Participant_Event_Category
             entity.HasIndex(e => new { e.ParticipantId, e.EventId, e.CategoryId }).IsUnique();
 
-            // NoAction on all three: SQL Server rejects multiple cascade paths,
-            // and both Users -> Events -> Enrolments and Users -> Enrolments reach this table.
             entity.HasOne(e => e.Participant)
                   .WithMany(u => u.Enrolments)
                   .HasForeignKey(e => e.ParticipantId)
@@ -113,7 +105,6 @@ public class AppDbContext : DbContext
                 "CK_Enrolments_Status", "[Status] IN ('Active', 'Cancelled')"));
         });
 
-        // ---------- Results : zero or one per enrolment ----------
         modelBuilder.Entity<Result>(entity =>
         {
             entity.HasIndex(r => r.EnrolmentId).IsUnique();                 // UQ_Results_EnrolmentId

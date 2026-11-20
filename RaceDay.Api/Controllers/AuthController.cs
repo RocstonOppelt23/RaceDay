@@ -46,7 +46,6 @@ public class AuthController : ControllerBase
             Role = request.Role
         };
 
-        // Every user gets an empty profile row they can fill in later.
         user.Profile = new UserProfile();
 
         _context.Users.Add(user);

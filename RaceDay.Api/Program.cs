@@ -9,11 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
 CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
 
-// --- Services ---
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
-// Swagger, reading the XML comments on the controllers
 builder.Services.AddSwaggerGen(options =>
 {
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -26,7 +24,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
 
-// Session state
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -37,7 +34,6 @@ builder.Services.AddSession(options =>
 
 var app = builder.Build();
 
-// --- Middleware (order matters) ---
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

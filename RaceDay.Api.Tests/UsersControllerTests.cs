@@ -55,7 +55,6 @@ public class UsersControllerTests
         var controller = new UsersController(context, new FakeBlobStorageService());
         TestHelper.SignIn(controller, participant.UserId, "Participant");
 
-        // organiser@raceday.co.za already belongs to the seeded organiser.
         var result = controller.UpdateMyProfile(new UpdateProfileDto(
             "Sipho", "Dlamini", "organiser@raceday.co.za", null, null, null));
 

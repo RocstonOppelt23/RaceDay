@@ -74,7 +74,6 @@ public class ResultsController : ControllerBase
     {
         int participantId = HttpContext.Session.GetInt32("UserId")!.Value;
 
-        // Filtered through the enrolment, so a participant only ever sees their own.
         var results = _context.Results
             .Where(r => r.Enrolment!.ParticipantId == participantId)
             .Select(r => new
