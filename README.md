@@ -346,6 +346,6 @@ As required by the IIE, I'm declaring that I used an AI coding assistant, Claude
 |---|---|
 | Part 1 | Cross-checking that my ERD, SQL script and endpoint plan matched each other |
 | Part 2 | Generating starting code for controllers and unit tests, explaining EF Core relationship configuration, reviewing test coverage, and fixing NuGet warnings that blocked the EF tools |
-| Part 3 | Generating code to my specification for the MVC controllers, views, view models, `ApiClient`, Blob Storage service, Dockerfile, CI updates and MVC unit tests, and drafting this README |
+| Part 3 | Helped write code for the MVC controllers, views, view models, `ApiClient`, Blob Storage service, Dockerfile, CI updates and MVC unit tests, working from my specification. Also helped draft this README. |
 
 I directed the tool from the brief and my own Part 2 API. I reviewed everything it produced, ran and tested it locally and in CI, and connected it to an Azure Storage account on my student subscription before committing the work. I checked the main design choices against the brief before keeping them, for example routing all MVC data access through the API instead of a second database, and passing the API session cookie through the MVC session so role checks keep working.
