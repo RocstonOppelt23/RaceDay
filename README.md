@@ -276,7 +276,11 @@ Pages are protected by `[RequireSessionRole]`, an MVC action filter that reads t
    npm install -g azurite
    azurite --silent --location ./azurite
    ```
-   Or use a real Azure Storage account: paste its connection string into `RaceDay.Api/appsettings.json` and turn on **Allow Blob anonymous access** on the account so the browser can display the images.
+   The project is tested against a real Azure Storage account (`racedayrocston2026`, South Africa North). To use one, create `RaceDay.Api/appsettings.Development.json` with:
+   ```json
+   { "AzureBlobStorage": { "ConnectionString": "<your storage account connection string>" } }
+   ```
+   This file is in `.gitignore`, so the key never goes to GitHub. Turn on **Allow Blob anonymous access** on the account so the browser can display the images.
 2. **Database.** Apply the new migration: `Update-Database` in the Package Manager Console (or `dotnet ef database update --project RaceDay.Api`).
 3. **API.** Run `RaceDay.Api` (it listens on `https://localhost:7101`).
 4. **MVC.** Run `RaceDay.Mvc` (it opens on `https://localhost:7201`). `ApiBaseUrl` in `RaceDay.Mvc/appsettings.json` must match the API's address.
