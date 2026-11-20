@@ -6,7 +6,7 @@ Organisers create and manage events, define age or distance categories, see who 
 
 **Module:** PROG6212 Programming 2B — Portfolio of Evidence
 **Part 2:** RESTful API in ASP.NET Core Web API, Entity Framework Core (code-first) against SQL Server, session-based role authentication, Swagger, and unit tests running in GitHub Actions.
-**Part 3:** ASP.NET Core MVC front end with role-aware Organiser and Participant interfaces, Azure Blob Storage for event banners and profile pictures, a Docker container for the MVC app, and a CI pipeline that builds and tests both projects and the image. Part 3 lives on the `part3-mvc` branch.
+**Part 3:** ASP.NET Core MVC front end with role-aware Organiser and Participant interfaces, Azure Blob Storage for event banners and profile pictures, a Docker container for the MVC app, and a CI pipeline that builds and tests both projects and the image. Part 3 was built on the `part3-mvc` branch and merged into `main` for the final submission.
 
 ---
 
