@@ -340,12 +340,12 @@ The Dockerfile is multi-stage: the .NET SDK image restores, builds and publishes
 
 ## AI usage disclosure
 
-AI tools were used in this project, in line with the IIE's guidance on declaring AI use.
+As required by the IIE, I'm declaring that I used an AI coding assistant, Claude (Anthropic), as a tool during this project.
 
-| Part | Tool | What it was used for |
-|---|---|---|
-| Part 1 | Claude (Anthropic) | Checking the ERD, SQL script and endpoint plan lined up with each other |
-| Part 2 | Claude (Anthropic) | Code scaffolding for controllers and tests, explaining EF Core relationship setup, reviewing test coverage, fixing NuGet audit warnings that blocked EF tools |
-| Part 3 | Claude (Anthropic) | Generating the MVC controllers, views, view models and `ApiClient`, the Blob Storage service, the Dockerfile and CI updates, the MVC unit tests, and drafting this README |
+| Part | How I used the tool |
+|---|---|
+| Part 1 | Cross-checking that my ERD, SQL script and endpoint plan matched each other |
+| Part 2 | Generating starting code for controllers and unit tests, explaining EF Core relationship configuration, reviewing test coverage, and fixing NuGet warnings that blocked the EF tools |
+| Part 3 | Generating code to my specification for the MVC controllers, views, view models, `ApiClient`, Blob Storage service, Dockerfile, CI updates and MVC unit tests, and drafting this README |
 
-How I used it: I set the requirements from the brief and my Part 2 API, then reviewed, ran and tested the generated code before committing it. Design decisions were mine, for example routing all MVC data access through the API instead of a second database, and passing the API session cookie through the MVC session so role checks keep working. I can explain and change any part of the code.
+I directed the tool from the brief and my own Part 2 API. I reviewed everything it produced, ran and tested it locally and in CI, and connected it to an Azure Storage account on my student subscription before committing the work. I checked the main design choices against the brief before keeping them, for example routing all MVC data access through the API instead of a second database, and passing the API session cookie through the MVC session so role checks keep working.
